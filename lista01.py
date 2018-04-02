@@ -84,13 +84,42 @@ def questao07(vetor, p, r, x):
 		
 		if(j == None):
 			i = i + 1
+	
 	if(j != None):
 		print("Indices", i, j, vetor[i], vetor[j])
 	else:
 		print("Não tem")
 
+def merge_count(vetor, p, q, r):
+	i = 0
+	j = 0
+	k = p
+	count_inversoes = 0
+	while (k<=r):
+		if(p + i > q):
+			j = j + 1
+		elif(q + 1 + j > r):
+			count_inversoes = count_inversoes + j
+			i = i + 1
+		elif(vetor[p+i] < vetor[q+1+j]):
+			i = i + 1
+			count_inversoes = count_inversoes + j
+		else:
+			j = j + 1
+		k = k + 1
+
+	return count_inversoes
 
 
+def questao08(vetor, p, r):
+	if(p==r):
+		return 0
+	q = floor((r+p)/2)
+	c1 = questao08(vetor, p, q)
+	c2 = questao08(vetor, q+1, r)
+	c3 = merge_count(vetor, p, q, r)
+
+	return c1 + c2 + c3
 
 v = [1,1,1,2,2]
 z = questao05(v, 2, 4)
@@ -103,3 +132,7 @@ print("Mediana: ", med)
 
 v3 = [4, 3, 5, 6, 1, 7, 2, 3]
 questao07(v3, 0, len(v3) - 1, 6)
+
+v4 = [3,2,1,4, 6]
+c = questao08(v4, 0, len(v4) - 1)
+print("Quantidade de Inversoes:", c)

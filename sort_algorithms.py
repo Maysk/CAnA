@@ -24,50 +24,69 @@ def insertion_sort_desc(vetor, p, r):
 
 
 
-def combina_asc(l1, l2):
-	resultado = []
-	while (len(l1) > 0 or len(l2) > 0) :
-		if(len(l1) == 0):
-			resultado.append(l2.pop(0))
-		elif(len(l2) == 0):
-			resultado.append(l1.pop(0))
-		elif(l1[0] < l2[0]):			
-			resultado.append(l1.pop(0))
+def combina_asc(vetor, p, q, r):
+	l1 = vetor[p:q+1]
+	l2 = vetor[q+1:r+1]
+	i = 0
+	j = 0
+	k = p
+	while (k<=r) :
+		if(p + i > q):
+			vetor[k] = l2[j]
+			j = j + 1
+		elif(q + 1 + j > r):
+			vetor[k] = l1[i]
+			i = i + 1
+		elif(l1[i] < l2[j]):			
+			vetor[k] = l1[i]
+			i = i + 1
 		else:
-			resultado.append(l2.pop(0))
-	return resultado
+			vetor[k] = l2[j]
+			j = j + 1
+
+		k = k + 1
 
 def merge_sort_asc(vetor, p, r):
 	if(p == r):
 		return [vetor[p]]
 	else:
 		q = floor((p + r)/2)
-		l1 = merge_sort_asc(vetor, p, q)
-		l2 = merge_sort_asc(vetor, q+1, r)
-		return combina_asc(l1, l2)
+		merge_sort_asc(vetor, p, q)
+		merge_sort_asc(vetor, q+1, r)
+		combina_asc(vetor, p, q, r)
 
 
-def combina_desc(l1, l2):
-	resultado = []
-	while (len(l1) > 0 or len(l2) > 0) :
-		if(len(l1) == 0):
-			resultado.append(l2.pop(0))
-		elif(len(l2) == 0):
-			resultado.append(l1.pop(0))
-		elif(l1[0] > l2[0]):			
-			resultado.append(l1.pop(0))
+def combina_desc(vetor, p, q, r):
+	l1 = vetor[p:q+1]
+	l2 = vetor[q+1:r+1]
+	i = 0
+	j = 0
+	k = p
+	while (k<=r) :
+		if(p + i > q):
+			vetor[k] = l2[j]
+			j = j + 1
+		elif(q + 1 + j > r):
+			vetor[k] = l1[i]
+			i = i + 1
+		elif(l1[i] > l2[j]):			
+			vetor[k] = l1[i]
+			i = i + 1
 		else:
-			resultado.append(l2.pop(0))
-	return resultado
+			vetor[k] = l2[j]
+			j = j + 1
+
+		k = k + 1
+
 
 def merge_sort_desc(vetor, p, r):
 	if(p == r):
 		return [vetor[p]]
 	else:
 		q = floor((p + r)/2)
-		l1 = merge_sort_desc(vetor, p, q)
-		l2 = merge_sort_desc(vetor, q+1, r)
-		return combina_desc(l1, l2)
+		merge_sort_desc(vetor, p, q)
+		merge_sort_desc(vetor, q+1, r)
+		combina_desc(vetor, p, q, r)
 
 
 def parent(idx):
@@ -116,8 +135,8 @@ def heap_sort_asc(vetor, p, r):
 
 v = [5, 3, 4, 2, 1]
 print("Inicial:", v)
-inicial_idx = 0
-final_idx = 4
+inicial_idx = 1
+final_idx = 3
 
 v_copy = v.copy()
 insertion_sort_asc(v_copy, inicial_idx, final_idx)
@@ -128,11 +147,11 @@ insertion_sort_desc(v_copy, inicial_idx, final_idx)
 print("Insertion Sort Desc:", v_copy)
 
 v_copy = v.copy()
-v_copy[inicial_idx:final_idx+1] = merge_sort_asc(v_copy, inicial_idx, final_idx)
+merge_sort_asc(v_copy, inicial_idx, final_idx)
 print("Merge Sort Asc:", v_copy)
 
 v_copy = v.copy()
-v_copy[inicial_idx:final_idx+1] = merge_sort_desc(v_copy, inicial_idx, final_idx)
+merge_sort_desc(v_copy, inicial_idx, final_idx)
 print("Merge Sort Desc:", v_copy)
 
 v_copy = v.copy()

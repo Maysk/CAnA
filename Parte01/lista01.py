@@ -1,5 +1,6 @@
 from math import floor
-from sort_algorithms import insertion_sort_asc, heap_sort_asc
+from sort_algorithms.insertion_sort import insertion_sort_asc
+from sort_algorithms.heap_sort_asc import heap_sort_asc
 
 
 #Questão 5

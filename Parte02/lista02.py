@@ -27,8 +27,8 @@ def question01_b(value):
 								+ i
 								)
 	return solutions_vector[value]
-str(
-)
+
+
 def question01_c(value, solutions_vector):
 	if (solutions_vector is None):
 		solutions_vector = 	[0 for i in range(0, 5)] + [None for i in range(5, value+1)]
@@ -52,13 +52,26 @@ def question01_c(value, solutions_vector):
 
 def question02(sequence_s):
 	size = len(sequence_s)
-	solutions_vector = [0] * size
-	solutions_vector[0] = sequence_s[0]
-	for i in range(1, size):
-		if(sequence_s[i-1] < sequence_s[i]):
-			sequence_s = 
+	solutions_vector = [0] * (size + 1)
+	end_idx_max_sum = -1
+	max_sum = 0
+	for i in range(1, size+1):
+		if(solutions_vector[i] < solutions_vector[i-1] + sequence_s[i-1]):
+			solutions_vector[i] = solutions_vector[i-1] + sequence_s[i-1]
+		
+		if(solutions_vector[i] > max_sum):
+			max_sum = solutions_vector[i]
+			end_idx_max_sum = i
 
+	if (i == -1) :
+		print("Vazio")
+	
+	else:
+		begin_idx_max_sum = end_idx_max_sum
+		while (begin_idx_max_sum >=0 and solutions_vector[begin_idx_max_sum] > 0):
+			begin_idx_max_sum -= 1
 
+		print("Sequencia de soma maxima: ", sequence_s[begin_idx_max_sum:end_idx_max_sum])
 
 
 ############################################
@@ -101,7 +114,7 @@ def print_question03(number_str, R_vector, end_i):
 		print(number_str[R_vector[end_i]: end_i+1], end=" | ")
 
 
-question_being_tested = '3'	
+question_being_tested = '2'	
 
 if(question_being_tested == '1'):
 	##Teste Q1
@@ -136,7 +149,9 @@ if(question_being_tested == '1'):
 	print("Question01_c: " + str(result))
 
 elif(question_being_tested == '2'):
-	pass
+	sequence = [5, 15, -30, 10, -5, 40, 10]
+	question02(sequence)
+
 elif(question_being_tested == '3'):
 	number_being_tested = 125271448164
 	number_being_tested_str = str(number_being_tested)
@@ -153,3 +168,4 @@ elif(question_being_tested == '4'):
 elif(question_being_tested == '5'):	
 	pass
 elif(question_being_tested == '6'):
+	pass

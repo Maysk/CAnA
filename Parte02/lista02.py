@@ -5,7 +5,6 @@ import time
 ############################################
 				#Questão 01#				
 ############################################
-#The complexity is O(3 ^ log n)
 def question01_a(value):
 	if(value >= 5):
 		termo1 = question01_a(floor(value/2))
@@ -18,7 +17,6 @@ def question01_a(value):
 		return 0
 
 
-#The Complexity is 
 def question01_b(value):
 	solutions_vector = 	[0 for i in range(value+1)]
 	for i in range(5, value+1):
@@ -47,8 +45,24 @@ def question01_c(value, solutions_vector):
 			return solutions_vector[value]
 
 
+
 ############################################
 				#Questão 02#				
+############################################
+
+def question02(sequence_s):
+	size = len(sequence_s)
+	solutions_vector = [0] * size
+	solutions_vector[0] = sequence_s[0]
+	for i in range(1, size):
+		if(sequence_s[i-1] < sequence_s[i]):
+			sequence_s = 
+
+
+
+
+############################################
+				#Questão 03#				
 ############################################
 
 def is_cubic_or_square(number):
@@ -121,6 +135,8 @@ if(question_being_tested == '1'):
 	print("Question01_c: " + str(elapsed_time))
 	print("Question01_c: " + str(result))
 
+elif(question_being_tested == '2'):
+	pass
 elif(question_being_tested == '3'):
 	number_being_tested = 125271448164
 	number_being_tested_str = str(number_being_tested)
@@ -131,3 +147,9 @@ elif(question_being_tested == '3'):
 		print("\n\n")
 	else:
 		print("OH NOO! It's not possible to break as cubics or squares numbers.")
+
+elif(question_being_tested == '4'):
+	pass
+elif(question_being_tested == '5'):	
+	pass
+elif(question_being_tested == '6'):

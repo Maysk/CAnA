@@ -1,5 +1,5 @@
 
-from math import floor, ceil
+from math import floor, ceil, inf
 import time
 
 ############################################
@@ -275,13 +275,55 @@ def track_knapsack_without_repetition(item_weights, item_values, capacity, n, ma
 
 
 ############################################
+				#Matrix Chain#				
+############################################
+
+def matrix_chain(p, n):
+	matrix_e = new_matrix(n,n)
+	matrix_r = new_matrix(n,n)
+
+	for i in range(n):
+		matrix_e[i][i] = 0
+		matrix_r[i][i] = 0
+
+
+	i = n - 2
+	while(i >= 0):
+		j = i + 1
+		while (j < n):
+			matrix_e[i][j] = inf
+			k = i 
+			while (k < j):
+				print ('Linha(i): ', i, "; Coluna(k): ", k, "; Delimiter(j): ", j)
+				q = matrix_e[i][k]  + matrix_e[k+1][j] + p[i]*p[k+1]*p[j+1]
+				if(matrix_e[i][j] > q):
+					matrix_e[i][j] = q
+					matrix_r[i][j] = k
+				
+				k = k + 1
+			
+			j  = j + 1
+		
+		i = i - 1
+	print ()
+	return [matrix_e[0][n-1], matrix_r]
+
+def track_matrix_chain(i, j, matrix_r):
+	if(i == j):
+		print ("A" + str(i), end=" ")
+	else:
+		print("(", end="")
+		track_matrix_chain(i, matrix_r[i][j], matrix_r)
+		track_matrix_chain(matrix_r[i][j]+1, j, matrix_r)
+		print(")", end="")
+############################################
 				#Testes#				
 ############################################
 
 
 
 
-question_being_tested = 'knapsack_with_repetition'	
+question_being_tested = 'matrix_chain'	
 
 if(question_being_tested == '1'):
 	##Teste Q1
@@ -369,3 +411,11 @@ elif(question_being_tested == 'knapsack_without_repetition'):
 	result = knapsack_without_repetition(item_weights, item_values, number_of_items, capacity)
 	print("Max Value: ", result[0])
 	track_knapsack_without_repetition(item_weights, item_values, capacity, number_of_items, result[1])
+
+
+elif(question_being_tested == 'matrix_chain'):
+	p = [40,20,30,10,30]
+	n = 4
+	result = matrix_chain(p, n)
+	print("Min number of multiplications: ", result[0])
+	track_matrix_chain(0,3,result[1])

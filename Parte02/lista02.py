@@ -240,10 +240,38 @@ def knapsack_with_repetition(item_weights, item_values, n, capacity):
 def track_knapsack_with_repetition(item_weights, item_values, capacity, vector_r):
 	i = vector_r[capacity]
 	if i >= 0:
-		print("Item: ", i, "; Weight: ", item_weights[i], "; Value: ", item_values[i], "; Remaining Capacity: ", capacity)
+		print("Item: ", i, "; Weight: ", item_weights[i], "; Value: ", item_values[i], "; Remaining Capacity: ", capacity - item_weights[i])
 		track_knapsack_with_repetition(item_weights, item_values, capacity - item_weights[i], vector_r)
 
 
+def knapsack_without_repetition(item_weights, item_values, n, capacity):
+	matrix_e = new_matrix(capacity + 1 , n + 1)
+	matrix_r = new_matrix(capacity + 1 , n + 1)
+
+	for line_idx in range(capacity+1):
+		matrix_e[line_idx][0] = 0
+
+	for column_idx in range(n+1):
+		matrix_e[0][column_idx] = 0
+
+	for line_idx in range(1, capacity + 1):
+		for column_idx in range(1, n + 1):
+			matrix_e[line_idx][column_idx] = matrix_e[line_idx][column_idx-1]
+			matrix_r[line_idx][column_idx] = 0
+
+			if(item_weights[column_idx - 1] <= line_idx and matrix_e[line_idx][column_idx] < matrix_e[line_idx - item_weights[column_idx-1]][column_idx-1] + item_values[column_idx-1] ):
+				matrix_e[line_idx][column_idx] = matrix_e[line_idx - item_weights[column_idx-1]][column_idx-1]  + item_values[column_idx-1]
+				matrix_r[line_idx][column_idx] = 1
+	return [matrix_e[capacity][n], matrix_r]
+
+def track_knapsack_without_repetition(item_weights, item_values, capacity, n, matrix_r):
+	if (capacity <= 0 or n <= 0):
+		return
+	if(matrix_r[capacity][n] == 0):
+		track_knapsack_without_repetition(item_weights, item_values, capacity, n - 1, matrix_r)
+	else:
+		print("Item: ", n-1, "; Weight: ", item_weights[n-1], "; Value: ", item_values[n-1], "; Remaining Capacity: ", capacity - item_weights[n-1])
+		track_knapsack_without_repetition(item_weights, item_values, capacity - item_weights[n-1], n - 1, matrix_r)
 
 
 ############################################
@@ -332,3 +360,12 @@ elif(question_being_tested == 'knapsack_with_repetition'):
 	result = knapsack_with_repetition(item_weights, item_values, number_of_items, capacity)
 	print("Max Value: ", result[0])
 	track_knapsack_with_repetition(item_weights, item_values, capacity, result[1])
+
+elif(question_being_tested == 'knapsack_without_repetition'):
+	item_weights = [3,2,4,5]
+	item_values = [40,10,50,70]
+	number_of_items = 4
+	capacity = 20
+	result = knapsack_without_repetition(item_weights, item_values, number_of_items, capacity)
+	print("Max Value: ", result[0])
+	track_knapsack_without_repetition(item_weights, item_values, capacity, number_of_items, result[1])

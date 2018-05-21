@@ -110,6 +110,7 @@ def question03(number):
 	return [solutions_vector[-1] != 0, solutions_vector, R_vector]
 
 
+
 def print_question03(number_str, R_vector, end_i):
 	
 	if(end_i>=0):
@@ -117,22 +118,51 @@ def print_question03(number_str, R_vector, end_i):
 		print(number_str[R_vector[end_i]: end_i+1], end=" | ")
 
 
+############################################
+				#Questão 04#				
+############################################
+
+
 
 ############################################
-				#Questão 03#				
+				#Questão 05#				
 ############################################
 
+def question05(item_values, n, total_value):
+	matrix_e = new_matrix(total_value+1, n+1)
+	matrix_r = new_matrix(total_value+1, n+1)
+	
+	for i in range(total_value+1):
+		matrix_e[i][0] = False
 
+	matrix_e[0][0] = True
+
+	for i in range(total_value + 1):
+		for j in range(1, n + 1):
+			matrix_e[i][j] = matrix_e[i][j-1]
+			matrix_r[i][j] = False
+			if(not matrix_e[i][j] and i >= item_values[j-1]): 
+				matrix_e[i][j] = matrix_e[i - item_values[j-1]][j-1]
+				matrix_r[i][j] = True
 	
 
+	return [matrix_e[total_value][n], matrix_r]
 
-
+def print_question05(item_values, n, total_value, matrix_e):
+	if(n <= 0  or total_value <= 0):
+		return
+	if(matrix_e[total_value][n]):
+		print("Item: ", n-1, "; Value: ", item_values[n-1], "; Remaining: ", total_value - item_values[n-1])
+		print_question05(item_values, n-1,  total_value - item_values[n-1], matrix_e)
+	else:
+		print_question05(item_values, n-1,  total_value, matrix_e)
 
 ############################################
 				#EditDistance#				
 ############################################
 def new_matrix(number_of_lines, number_of_columns):
 	return [[None]*number_of_columns for i in range(number_of_lines)]
+
 def edit_distance(word_a,word_b, m, n):
 	matrix_e = new_matrix(m+1, n+1)
 	matrix_r = new_matrix(m+1, n+1)
@@ -209,7 +239,7 @@ def track_lcs(word_a, i, j, matrix_r):
 		return
 	if(matrix_r[i][j] == "diagonal"):
 		track_lcs(word_a, i-1, j-1, matrix_r)
-		print(word_a[i-1])
+		print(word_a[i-1], end = " ")
 	elif(matrix_r[i][j] == "up"):
 		track_lcs(word_a, i-1, j, matrix_r)
 	else:
@@ -294,7 +324,7 @@ def matrix_chain(p, n):
 			matrix_e[i][j] = inf
 			k = i 
 			while (k < j):
-				print ('Linha(i): ', i, "; Coluna(k): ", k, "; Delimiter(j): ", j)
+				#print ('Linha(i): ', i, "; Coluna(k): ", k, "; Delimiter(j): ", j)
 				q = matrix_e[i][k]  + matrix_e[k+1][j] + p[i]*p[k+1]*p[j+1]
 				if(matrix_e[i][j] > q):
 					matrix_e[i][j] = q
@@ -323,7 +353,7 @@ def track_matrix_chain(i, j, matrix_r):
 
 
 
-question_being_tested = 'matrix_chain'	
+question_being_tested = '5'	
 
 if(question_being_tested == '1'):
 	##Teste Q1
@@ -373,11 +403,25 @@ elif(question_being_tested == '3'):
 		print("OH NOO! It's not possible to break as cubics or squares numbers.")
 
 elif(question_being_tested == '4'):
-	pass
+	word = "ACGTGTCAAAATCG"
+	reverse_word = word[::-1]
+	print("Usando LCS: ")
+	result = lcs(word, reverse_word, len(word), len(reverse_word))
+	print("Max Palindrome: ", result[0])
+	track_lcs(word, len(word), len(reverse_word), result[1])
+
 elif(question_being_tested == '5'):	
-	pass
+	n = 4
+	items_values = [2,4,8,16]
+	T = 1000
+	result = question05(items_values, n, T)
+	print("The number ", T, " can be represented:", result[0])
+	if(result[0]):
+		print_question05(items_values, n, T, result[1])
+
 elif(question_being_tested == '6'):
 	pass
+
 elif(question_being_tested == 'edit_distance'):
 	word_1 = ''
 	word_2 = 'bana'
@@ -385,6 +429,7 @@ elif(question_being_tested == 'edit_distance'):
 	number_of_editions = result[0]
 	print("Number of Editions: ", number_of_editions)
 	track_edit_distance(word_1, word_2, len(word_1), len(word_2), result[1])
+
 elif(question_being_tested == 'lcs'):
 	word_1 = 'bonan'
 	word_2 = 'bana'
@@ -392,7 +437,6 @@ elif(question_being_tested == 'lcs'):
 	max_lcs = result[0]
 	print("Max LCSs: ", max_lcs)
 	track_lcs(word_1, len(word_1), len(word_2), result[1])
-
 
 elif(question_being_tested == 'knapsack_with_repetition'):
 	item_weights = [3,2,4,5]
@@ -412,10 +456,11 @@ elif(question_being_tested == 'knapsack_without_repetition'):
 	print("Max Value: ", result[0])
 	track_knapsack_without_repetition(item_weights, item_values, capacity, number_of_items, result[1])
 
-
 elif(question_being_tested == 'matrix_chain'):
-	p = [40,20,30,10,30]
-	n = 4
+	p = [30,35,15,5,10,20,25]
+	n = len(p)-1
 	result = matrix_chain(p, n)
 	print("Min number of multiplications: ", result[0])
-	track_matrix_chain(0,3,result[1])
+	track_matrix_chain(0, n-1, result[1])
+	print()
+

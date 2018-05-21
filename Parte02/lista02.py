@@ -74,6 +74,9 @@ def question02(sequence_s):
 		print("Sequencia de soma maxima: ", sequence_s[begin_idx_max_sum:end_idx_max_sum])
 
 
+
+
+
 ############################################
 				#Questão 03#				
 ############################################
@@ -114,7 +117,143 @@ def print_question03(number_str, R_vector, end_i):
 		print(number_str[R_vector[end_i]: end_i+1], end=" | ")
 
 
-question_being_tested = '2'	
+
+############################################
+				#Questão 03#				
+############################################
+
+
+	
+
+
+
+
+############################################
+				#EditDistance#				
+############################################
+def new_matrix(number_of_lines, number_of_columns):
+	return [[None]*number_of_columns for i in range(number_of_lines)]
+def edit_distance(word_a,word_b, m, n):
+	matrix_e = new_matrix(m+1, n+1)
+	matrix_r = new_matrix(m+1, n+1)
+
+	for column_idx in range(n+1):
+		matrix_e[0][column_idx] = column_idx
+		matrix_r[0][column_idx] = "left"
+	for line_idx in range(m+1):
+		matrix_e[line_idx][0] = line_idx
+		matrix_r[line_idx][0] = "up"
+
+	for line_idx in range(1, m+1):
+		for column_idx in range(1, n+1):
+			if(word_a[line_idx - 1] == word_b[column_idx -1]):
+				matrix_e[line_idx][column_idx] = matrix_e[line_idx - 1][column_idx - 1]
+				matrix_r[line_idx][column_idx] = "diagonal"
+
+			elif( matrix_e[line_idx - 1][column_idx - 1] <= min(matrix_e[line_idx - 1 ][column_idx], matrix_e[line_idx][column_idx-1]) ): 
+				matrix_e[line_idx][column_idx] = 1 + matrix_e[line_idx - 1][column_idx - 1]
+				matrix_r[line_idx][column_idx] = "diagonal"
+
+			elif(matrix_e[line_idx - 1][column_idx] <= matrix_e[line_idx][column_idx - 1]):
+				matrix_e[line_idx][column_idx] = 1 + matrix_e[line_idx - 1][column_idx]
+				matrix_r[line_idx][column_idx] = "up"
+			else:
+				matrix_e[line_idx][column_idx] = 1 + matrix_e[line_idx][column_idx - 1]
+				matrix_r[line_idx][column_idx] = "left"
+
+	return [matrix_e[m][n], matrix_r]
+
+def track_edit_distance(word_a, word_b, i, j, matrix_r):
+	if(i == 0 and j == 0):
+		return
+
+	if(matrix_r[i][j] == "diagonal"):
+		track_edit_distance(word_a, word_b, i-1, j-1, matrix_r)
+		print("Edit: ", word_a[i-1], word_b[j-1])
+	elif(matrix_r[i][j] == "up"):
+		track_edit_distance(word_a, word_b, i-1, j,matrix_r)
+		print("Edit: ", word_a[i-1], "_")
+	else:
+		track_edit_distance(word_a, word_b, i, j-1, matrix_r)
+		print("Edit: ", "_", word_b[j-1])
+
+
+############################################
+				#LCS#				
+############################################
+def lcs(word_a, word_b, m, n):
+	matrix_e = new_matrix(m + 1, n + 1)
+	matrix_r = new_matrix(m + 1, n + 1)
+
+	for column_idx in range(n + 1):
+		matrix_e[0][column_idx] = 0
+
+	for line_idx in range(m + 1):
+		matrix_e[line_idx][0] = 0
+	
+	for line_idx in range(1, m + 1):
+		for column_idx in range(1, n + 1):
+			if(word_a[line_idx - 1] == word_b[column_idx - 1 ]):
+				matrix_e[line_idx][column_idx] = 1 + matrix_e[line_idx - 1][column_idx - 1]
+				matrix_r[line_idx][column_idx] = "diagonal"
+			elif(matrix_e[line_idx - 1][column_idx] >= matrix_e[line_idx][column_idx -1]):
+				matrix_e[line_idx][column_idx] = matrix_e[line_idx - 1][column_idx]
+				matrix_r[line_idx][column_idx] = "up"
+			else:
+				matrix_e[line_idx][column_idx] = matrix_e[line_idx][column_idx-1]
+				matrix_r[line_idx][column_idx] = "left"
+	return [matrix_e[m][n], matrix_r]
+
+def track_lcs(word_a, i, j, matrix_r):
+	if (i == 0 or j == 0):
+		return
+	if(matrix_r[i][j] == "diagonal"):
+		track_lcs(word_a, i-1, j-1, matrix_r)
+		print(word_a[i-1])
+	elif(matrix_r[i][j] == "up"):
+		track_lcs(word_a, i-1, j, matrix_r)
+	else:
+		track_lcs(word_a, i, j-1, matrix_r)
+
+############################################
+				#Knapsack#				
+############################################
+def new_vector(length):
+	return [None] * length
+
+def knapsack_with_repetition(item_weights, item_values, n, capacity):
+	vector_v = new_vector(capacity + 1)
+	vector_r = new_vector(capacity + 1)
+	vector_v[0] = 0
+	vector_r[0] = -1
+
+	for i in range(1, capacity+1):
+		vector_v[i] = 0
+		vector_r[i] = -1
+		for j in range(n):
+			if(item_weights[j] <= i and vector_v[i] < item_values[j] + vector_v[i - item_weights[j]]):
+				vector_v[i] = item_values[j] + vector_v[i - item_weights[j]]
+				vector_r[i] = j
+
+	return [vector_v[capacity], vector_r]
+
+def track_knapsack_with_repetition(item_weights, item_values, capacity, vector_r):
+	i = vector_r[capacity]
+	if i >= 0:
+		print("Item: ", i, "; Weight: ", item_weights[i], "; Value: ", item_values[i], "; Remaining Capacity: ", capacity)
+		track_knapsack_with_repetition(item_weights, item_values, capacity - item_weights[i], vector_r)
+
+
+
+
+############################################
+				#Testes#				
+############################################
+
+
+
+
+question_being_tested = 'knapsack_with_repetition'	
 
 if(question_being_tested == '1'):
 	##Teste Q1
@@ -169,3 +308,27 @@ elif(question_being_tested == '5'):
 	pass
 elif(question_being_tested == '6'):
 	pass
+elif(question_being_tested == 'edit_distance'):
+	word_1 = ''
+	word_2 = 'bana'
+	result = edit_distance(word_1, word_2, len(word_1), len(word_2))
+	number_of_editions = result[0]
+	print("Number of Editions: ", number_of_editions)
+	track_edit_distance(word_1, word_2, len(word_1), len(word_2), result[1])
+elif(question_being_tested == 'lcs'):
+	word_1 = 'bonan'
+	word_2 = 'bana'
+	result = lcs(word_1, word_2, len(word_1), len(word_2))
+	max_lcs = result[0]
+	print("Max LCSs: ", max_lcs)
+	track_lcs(word_1, len(word_1), len(word_2), result[1])
+
+
+elif(question_being_tested == 'knapsack_with_repetition'):
+	item_weights = [3,2,4,5]
+	item_values = [40,10,50,70]
+	number_of_items = 4
+	capacity = 5
+	result = knapsack_with_repetition(item_weights, item_values, number_of_items, capacity)
+	print("Max Value: ", result[0])
+	track_knapsack_with_repetition(item_weights, item_values, capacity, result[1])
